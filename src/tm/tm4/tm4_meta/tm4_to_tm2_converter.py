@@ -1,15 +1,17 @@
 import sys
-import string
 import math
 from state import *
 from stateTemplates import *
 import tmsim
 
+
 def alphabetMTToST():
     return ["_", "1", "H", "E"]
 
+
 def alphabetMSToTS():
     return ["a", "b"]
+
 
 def convertStatesToString(listOfStates, output):
 
@@ -22,9 +24,9 @@ def convertStatesToString(listOfStates, output):
 
     for state in listOfStates:
         try:
-            assert (not state.stateName in statesIveAlreadyPrinted)
+            assert not state.stateName in statesIveAlreadyPrinted
         except AssertionError:
-            print state.stateName
+            print(state.stateName)
             raise
 
         statesIveAlreadyPrinted[state.stateName] = None
@@ -35,10 +37,20 @@ def convertStatesToString(listOfStates, output):
         output.write(state.stateName + ":\n")
 
         for symbol in alphabetMSToTS():
-            output.write("\t" + symbol + " -> " + state.getNextStateName(symbol) + "; " + \
-                state.getHeadMove(symbol) + "; " + state.getWrite(symbol) + "\n")
+            output.write(
+                "\t"
+                + symbol
+                + " -> "
+                + state.getNextStateName(symbol)
+                + "; "
+                + state.getHeadMove(symbol)
+                + "; "
+                + state.getWrite(symbol)
+                + "\n"
+            )
 
         output.write("\n")
+
 
 def getListOfAllABCombosOld(comboSize):
     if comboSize == 0:
@@ -51,6 +63,7 @@ def getListOfAllABCombosOld(comboSize):
                 returnList.append(item + symbol)
 
         return returnList
+
 
 def getListOfAllABCombos(listSize):
     returnList = [""]
@@ -72,6 +85,7 @@ def getListOfAllABCombos(listSize):
         counter += 1
 
     return returnList
+
 
 # returns a dictionary mapping MTToST symbols to the state that indicates that's
 # what we've read
@@ -96,7 +110,9 @@ def makeStateReadTree(name, inState, listSize, reverseSymbolMapping, listOfState
         listOfStates.append(previousState)
 
         for symbol in alphabetMSToTS():
-            currentState = State(name + "_read_" + previousWord + symbol, None, alphabetMSToTS())
+            currentState = State(
+                name + "_read_" + previousWord + symbol, None, alphabetMSToTS()
+            )
 
             wordList.insert(indexCounter, previousWord + symbol)
             stateList.insert(indexCounter, currentState)
@@ -112,26 +128,13 @@ def makeStateReadTree(name, inState, listSize, reverseSymbolMapping, listOfState
 
         counter += 1
 
-#   for state in stateList:
-#       wordRead = string.split(state.stateName, "_")[-1]
-#
-#       if len(wordRead) == maxWordSize:
-#           returnDict[reverseSymbolMapping[wordRead]] = state
-#
-#       else:
-#           # make one buffer state (more is never necessary because of earlier cleverness)
-#           bufferState = State(state.stateName + "_buffer", None, alphabetMSToTS())
-#           state.setAllNextStates(bufferState)
-#           state.setAllHeadMoves("-")
-#
-#           returnDict[reverseSymbolMapping[wordRead]] = state
-
     for state in stateList:
-        wordRead = string.split(state.stateName, "_") [-1]
+        wordRead = state.stateName.split("_")[-1]
 
         returnDict[wordRead] = state
 
     return returnDict
+
 
 def getSymbolMapping():
     symbolMapping = {}
@@ -147,21 +150,30 @@ def getSymbolMapping():
 
     return symbolMapping, reverseSymbolMapping
 
+
 # This is the key function of this program, and making it optimized in terms of states means
 # making it a hot mess, unfortunately
-def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
-    outerState, coreStateDictionary, listOfStates):
+def processSymbol(
+    inState,
+    name,
+    outerSymbol,
+    symbolMapping,
+    conditions,
+    outerState,
+    coreStateDictionary,
+    listOfStates,
+):
 
     wordLength = len(symbolMapping["_"])
 
-#   listOfStates.append(inState)
-#   We can't do this here because then we'll end up appending it multiple times :P
+    #   listOfStates.append(inState)
+    #   We can't do this here because then we'll end up appending it multiple times :P
 
     nextOuterState = outerState.getNextState(outerSymbol)
     outerHeadMove = outerState.getHeadMove(outerSymbol)
     outerWrite = outerState.getWrite(outerSymbol)
 
-#   for symbol in conditions:
+    #   for symbol in conditions:
     if nextOuterState.stateName == "ERROR":
         for symbol in conditions:
             inState.setNextState(symbol, SimpleState("ERROR"))
@@ -200,8 +212,8 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
         # afraid of the possibility of *fewer* symbols appearing
 
         for i in range(wordLength - 2, 0, -1):
-            currentState = State(name + "_write." + str(i+1), None, alphabetMSToTS())
-#           print currentState.stateName
+            currentState = State(name + "_write." + str(i + 1), None, alphabetMSToTS())
+            #           print currentState.stateName
             listOfStates.append(currentState)
 
             prevState.setAllNextStates(currentState)
@@ -231,8 +243,17 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
             currentState.setAllNextStates(moveState)
             currentState.setAllHeadMoves("L")
 
-            listOfStates.extend(moveByNoStandingInPlace(moveState, name, wordLength - 1,
-                "L", coreStateDictionary[nextOuterState.stateName], None, alphabetMSToTS()))
+            listOfStates.extend(
+                moveByNoStandingInPlace(
+                    moveState,
+                    name,
+                    wordLength - 1,
+                    "L",
+                    coreStateDictionary[nextOuterState.stateName],
+                    None,
+                    alphabetMSToTS(),
+                )
+            )
 
         elif outerHeadMove == "R":
 
@@ -241,8 +262,17 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
             currentState.setAllNextStates(moveState)
             currentState.setAllHeadMoves("R")
 
-            listOfStates.extend(moveByNoStandingInPlace(moveState, name,
-                wordLength - 1, "R", coreStateDictionary[nextOuterState.stateName], None, alphabetMSToTS()))
+            listOfStates.extend(
+                moveByNoStandingInPlace(
+                    moveState,
+                    name,
+                    wordLength - 1,
+                    "R",
+                    coreStateDictionary[nextOuterState.stateName],
+                    None,
+                    alphabetMSToTS(),
+                )
+            )
 
         else:
             raise
@@ -257,8 +287,17 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
                 inState.setNextState(symbol, moveState)
                 inState.setHeadMove(symbol, "L")
 
-            listOfStates.extend(moveByNoStandingInPlace(moveState, name,
-                wordLength - 2, "L", coreStateDictionary[nextOuterState.stateName], None, alphabetMSToTS()))
+            listOfStates.extend(
+                moveByNoStandingInPlace(
+                    moveState,
+                    name,
+                    wordLength - 2,
+                    "L",
+                    coreStateDictionary[nextOuterState.stateName],
+                    None,
+                    alphabetMSToTS(),
+                )
+            )
 
         elif outerHeadMove == "L":
             moveState = State(name + "_move.1", None, alphabetMSToTS())
@@ -267,14 +306,25 @@ def processSymbol(inState, name, outerSymbol, symbolMapping, conditions,
                 inState.setNextState(symbol, moveState)
                 inState.setHeadMove(symbol, "L")
 
-            listOfStates.extend(moveByNoStandingInPlace(moveState, name,
-                2*wordLength - 2, "L", coreStateDictionary[nextOuterState.stateName], None, alphabetMSToTS()))
+            listOfStates.extend(
+                moveByNoStandingInPlace(
+                    moveState,
+                    name,
+                    2 * wordLength - 2,
+                    "L",
+                    coreStateDictionary[nextOuterState.stateName],
+                    None,
+                    alphabetMSToTS(),
+                )
+            )
 
         else:
             # Then we're just about where we need to be!
 
             for symbol in conditions:
-                inState.setNextState(symbol, coreStateDictionary[nextOuterState.stateName])
+                inState.setNextState(
+                    symbol, coreStateDictionary[nextOuterState.stateName]
+                )
                 inState.setHeadMove(symbol, "R")
 
 
@@ -293,12 +343,14 @@ if __name__ == "__main__":
 
     listOfLegalSimpleStates = ["ACCEPT", "REJECT", "HALT", "ERROR", "OUT"]
 
-#   print symbolMapping
+    #   print symbolMapping
 
     wordLength = len(symbolMapping["_"])
 
     for outerState in sttm.listOfRealStates:
-        coreStateDictionary[outerState.stateName] = State(outerState.stateName + "_read_", None, alphabetMSToTS())
+        coreStateDictionary[outerState.stateName] = State(
+            outerState.stateName + "_read_", None, alphabetMSToTS()
+        )
 
         if outerState.isStartState:
             coreStateDictionary[outerState.stateName].makeStartState()
@@ -319,7 +371,6 @@ if __name__ == "__main__":
             # This is an unprincipled hack; it says that if the state in question has only one non-ERROR thing that could be read,
             # and there's a thing to write, and you want to go right, then just write it as you go right.
 
-
             nextState = outerState.getNextState(onlyAcceptableSymbol)
             write = outerState.getWrite(onlyAcceptableSymbol)
             headMove = outerState.getHeadMove(onlyAcceptableSymbol)
@@ -336,7 +387,9 @@ if __name__ == "__main__":
 
             if writeMapping[1] != onlyAcceptableMapping[1]:
 
-                writeSecondSymbolState = State(outerState.stateName + "_write_next", None, alphabetMSToTS())
+                writeSecondSymbolState = State(
+                    outerState.stateName + "_write_next", None, alphabetMSToTS()
+                )
                 listOfStates.append(writeSecondSymbolState)
                 # Then we need to go right to write the new second symbol
                 coreState.setNextState(onlyAcceptableMapping[0], writeSecondSymbolState)
@@ -344,14 +397,23 @@ if __name__ == "__main__":
                 coreState.setWrite(onlyAcceptableMapping[0], writeMapping[0])
 
                 if headMove == "R" or headMove == "-":
-                    writeSecondSymbolState.setNextState(onlyAcceptableMapping[1], coreStateDictionary[nextState.stateName])
+                    writeSecondSymbolState.setNextState(
+                        onlyAcceptableMapping[1],
+                        coreStateDictionary[nextState.stateName],
+                    )
                 elif headMove == "L":
-                    goLeftState = State(outerState.stateName + "_go_left", None, alphabetMSToTS())
+                    goLeftState = State(
+                        outerState.stateName + "_go_left", None, alphabetMSToTS()
+                    )
                     listOfStates.append(goLeftState)
 
-                    writeSecondSymbolState.setNextState(onlyAcceptableMapping[1], goLeftState)
+                    writeSecondSymbolState.setNextState(
+                        onlyAcceptableMapping[1], goLeftState
+                    )
 
-                writeSecondSymbolState.setWrite(onlyAcceptableMapping[1], writeMapping[1])
+                writeSecondSymbolState.setWrite(
+                    onlyAcceptableMapping[1], writeMapping[1]
+                )
 
                 if headMove == "R":
                     writeSecondSymbolState.setHeadMove(onlyAcceptableMapping[1], "R")
@@ -360,11 +422,20 @@ if __name__ == "__main__":
                 elif headMove == "L":
                     writeSecondSymbolState.setHeadMove(onlyAcceptableMapping[1], "L")
 
-                    moveByNoStandingInPlace(goLeftState, outerState.stateName + "_go_left", 2, "L", nextCoreState,
-                        listOfStates, alphabetMSToTS())
+                    moveByNoStandingInPlace(
+                        goLeftState,
+                        outerState.stateName + "_go_left",
+                        2,
+                        "L",
+                        nextCoreState,
+                        listOfStates,
+                        alphabetMSToTS(),
+                    )
 
             else:
-                moveState = State(outerState.stateName + "_move", None, alphabetMSToTS())
+                moveState = State(
+                    outerState.stateName + "_move", None, alphabetMSToTS()
+                )
                 listOfStates.append(moveState)
 
                 coreState.setNextState(onlyAcceptableMapping[0], moveState)
@@ -387,53 +458,73 @@ if __name__ == "__main__":
             # There's more than one possible symbol that could be read; in the interest of simplicity,
             # we do the more general and less parsimonious thing.
 
-#           if outerState.stateName == "HALT":print outerState.stateName
+            #           if outerState.stateName == "HALT":print outerState.stateName
 
-            readResultDictionary = makeStateReadTree(outerState.stateName,
+            readResultDictionary = makeStateReadTree(
+                outerState.stateName,
                 coreStateDictionary[outerState.stateName],
-                2 ** (wordLength - 1), reverseSymbolMapping, listOfStates)
+                2 ** (wordLength - 1),
+                reverseSymbolMapping,
+                listOfStates,
+            )
 
-    #       for symbol in alphabetMTToST():
-    #
-    #           nextOuterState = outerState.getNextState(symbol)
-    #
-    #           if nextOuterState.stateName == "ERROR":
-    #               readResultDictionary[symbol].stateName = "ERROR"
-    #
-    #           elif nextOuterState.stateName == "ACCEPT":
-    #               readResultDictionary[symbol].stateName = "ACCEPT"
-    #
-    #           elif nextOuterState.stateName == "REJECT":
-    #               readResultDictionary[symbol].stateName = "REJECT"
-    #
-    #           else:
-    #               if
+            #       for symbol in alphabetMTToST():
+            #
+            #           nextOuterState = outerState.getNextState(symbol)
+            #
+            #           if nextOuterState.stateName == "ERROR":
+            #               readResultDictionary[symbol].stateName = "ERROR"
+            #
+            #           elif nextOuterState.stateName == "ACCEPT":
+            #               readResultDictionary[symbol].stateName = "ACCEPT"
+            #
+            #           elif nextOuterState.stateName == "REJECT":
+            #               readResultDictionary[symbol].stateName = "REJECT"
+            #
+            #           else:
+            #               if
 
             for word in readResultDictionary:
 
-                if readResultDictionary[word].stateName == "HALT": print readResultDictionary[word].stateName
+                if readResultDictionary[word].stateName == "HALT":
+                    print(readResultDictionary[word].stateName)
 
                 listOfStates.append(readResultDictionary[word])
 
                 # if we have a word that's malformed (like bb) then we interpret as that symbol for all following characters
                 if word in reverseSymbolMapping:
-                    processSymbol(readResultDictionary[word], outerState.stateName + "_read_" + reverseSymbolMapping[word],
-                        reverseSymbolMapping[word], symbolMapping, alphabetMSToTS(), outerState, coreStateDictionary, listOfStates)
+                    processSymbol(
+                        readResultDictionary[word],
+                        outerState.stateName + "_read_" + reverseSymbolMapping[word],
+                        reverseSymbolMapping[word],
+                        symbolMapping,
+                        alphabetMSToTS(),
+                        outerState,
+                        coreStateDictionary,
+                        listOfStates,
+                    )
 
                 else:
                     for symbol in alphabetMSToTS():
-                        processSymbol(readResultDictionary[word], outerState.stateName + "_read_" + reverseSymbolMapping[word + symbol],
-                            reverseSymbolMapping[word + symbol], symbolMapping,
-                            [symbol], outerState, coreStateDictionary, listOfStates)
+                        processSymbol(
+                            readResultDictionary[word],
+                            outerState.stateName
+                            + "_read_"
+                            + reverseSymbolMapping[word + symbol],
+                            reverseSymbolMapping[word + symbol],
+                            symbolMapping,
+                            [symbol],
+                            outerState,
+                            coreStateDictionary,
+                            listOfStates,
+                        )
 
-#       for symbol in alphabetMSToTS():
+    #       for symbol in alphabetMSToTS():
 
+    #   for outerState in tm.listOfRealStates:
 
+    print("State count:", len(listOfStates))
 
-
-#   for outerState in tm.listOfRealStates:
-
-
-    print "State count:", len(listOfStates)
-
-    convertStatesToString(listOfStates, open("../../tm2/tm2_files/" + tmName + ".tm2", "w"))
+    convertStatesToString(
+        listOfStates, open("../../tm2/tm2_files/" + tmName + ".tm2", "w")
+    )

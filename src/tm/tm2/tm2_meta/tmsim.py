@@ -1,29 +1,30 @@
-import string
 import sys
-
+from ipdb import set_trace as st
 from state import *
 
 # The TM simulator, originally written by Adam Yedidia and improved to be much faster by Carl Bolz. Thank you Carl!
 
+
 def getStateName(line):
-    colonLoc = string.find(line, ":")
+    colonLoc = line.find(":")
 
     stateName = line[:colonLoc]
 
     return stateName
 
+
 if __name__ == "__main__":
     sttm = SingleTapeTuringMachine(sys.argv[-1], ["_", "1", "H", "E"])
     args = sys.argv[1:-1]
 
-    quiet = ("-q" in args)
+    quiet = "-q" in args
 
-    numSteps = float("Inf") # default value
-    if ("-s" in args):
+    numSteps = float("Inf")  # default value
+    if "-s" in args:
         numSteps = args[args.index("-s") + 1]
 
     output = None
-    if ("-f" in args):
+    if "-f" in args:
         output = open(args[args.index("-f") + 1], "w")
 
     sttm.run(quiet, numSteps, output)
@@ -33,18 +34,20 @@ def parseMachine(path, alphabet):
     with open(path, "r") as inp:
         tmLines = inp.readlines()
 
-    stateDictionary = {"ACCEPT": SimpleState("ACCEPT", alphabet),
+    stateDictionary = {
+        "ACCEPT": SimpleState("ACCEPT", alphabet),
         "REJECT": SimpleState("REJECT", alphabet),
         "ERROR": SimpleState("ERROR", alphabet),
         "HALT": SimpleState("HALT", alphabet),
-        "OUT": SimpleState("OUT", alphabet)}
+        "OUT": SimpleState("OUT", alphabet),
+    }
 
     listOfRealStates = []
 
     # initialize state dictionary
     for line in tmLines[1:]:
-        if line != "\n": # not a blank line
-            lineSplit = string.split(line)
+        if line != "\n":  # not a blank line
+            lineSplit = line.split()
 
             if lineSplit[0] == "START":
                 stateName = getStateName(line[6:])
@@ -63,7 +66,7 @@ def parseMachine(path, alphabet):
     # fill in state dictionary
     for line in tmLines[1:]:
         if line != "\n":
-            lineSplit = string.split(line)
+            lineSplit = line.split()
 
             if lineSplit[0] == "START":
                 stateName = getStateName(line[6:])
@@ -79,37 +82,37 @@ def parseMachine(path, alphabet):
                 headMove = lineSplit[3][:-1]
                 write = lineSplit[4]
 
-                currentStateBeingModified.setNextState(symbol,
-                    stateDictionary[stateName])
+                currentStateBeingModified.setNextState(
+                    symbol, stateDictionary[stateName]
+                )
                 currentStateBeingModified.setHeadMove(symbol, headMove)
                 currentStateBeingModified.setWrite(symbol, write)
 
     return startState, stateDictionary, listOfRealStates
 
+
 def stateDictionariesToLists(stateDictionary, alphabet, startState):
     simulationStates = {}
-    for state in stateDictionary.itervalues():
+    for state in stateDictionary.values():
         if state.isSimpleState():
             newState = state
         else:
             newState = SimulationState()
         simulationStates[state] = newState
-    for state in stateDictionary.itervalues():
+    for state in stateDictionary.values():
         if not state.isSimpleState():
             simulationStates[state]._initFromState(state, simulationStates)
     return simulationStates[startState]
+
 
 class SingleTapeTuringMachine(object):
     def __init__(self, path, alphabet=["_", "1", "H", "E"]):
         self.tape = Tape(None, alphabet[0])
 
-        startState, stateDictionary, listOfRealStates = parseMachine(
-                path, alphabet)
-        startState = stateDictionariesToLists(
-                stateDictionary, alphabet, startState)
+        startState, stateDictionary, listOfRealStates = parseMachine(path, alphabet)
+        startState = stateDictionariesToLists(stateDictionary, alphabet, startState)
         self.startState = startState
         self.listOfRealStates = listOfRealStates
-
 
     def run(self, quiet=False, limited=False, numSteps=float("Inf"), output=None):
 
@@ -129,49 +132,53 @@ class SingleTapeTuringMachine(object):
 
             if state.isSimpleState():
                 if state.stateName == "ERROR":
-                    print "Turing machine threw error!"
+                    print("Turing machine threw error!")
                     halted = True
                     break
 
                 if state.stateName == "ACCEPT":
-                    print "Turing machine accepted after", stepCounter, "steps."
-                    print tape.length(), "squares of memory were used."
+                    print("Turing machine accepted after", stepCounter, "steps.")
+                    print(tape.length(), "squares of memory were used.")
                     halted = True
                     break
 
                 if state.stateName == "REJECT":
-                    print "Turing machine rejected after", stepCounter, "steps."
-                    print tape.length(), "squares of memory were used."
+                    print("Turing machine rejected after", stepCounter, "steps.")
+                    print(tape.length(), "squares of memory were used.")
                     halted = True
                     break
 
                 if state.stateName == "HALT":
-                    print "Turing machine halted after", stepCounter, "steps."
-                    print tape.length(), "squares of memory were used."
+                    print("Turing machine halted after", stepCounter, "steps.")
+                    print(tape.length(), "squares of memory were used.")
                     halted = True
                     break
 
                 if state.stateName == "OUT":
-                    print "Turing machine execution incomplete: reached out state."
-                    print "Perhaps this Turing machine wants to be melded with another machine."
+                    print("Turing machine execution incomplete: reached out state.")
+                    print(
+                        "Perhaps this Turing machine wants to be melded with another machine."
+                    )
 
             state, write, headmove = state.transitionFunc(ordsymbol)
             ordsymbol = tape.writeSymbolMoveAndRead(write, headmove)
 
         if not halted:
-            print "Turing machine ran for", numSteps, "steps without halting."
+            print("Turing machine ran for", numSteps, "steps without halting.")
 
     def printTape(self, state, start, end, output):
         if output == None:
 
-            print state.stateName
+            print(state.stateName)
 
             self.tape.printTape(start, end)
-#           print "--------------------------------------"
+        #           print "--------------------------------------"
         else:
             output.write(state.stateName + "\n")
 
             self.tape.printTape(start, end, output)
+
+
 #           output.write("--------------------------------------\n")
 
 
@@ -199,12 +206,15 @@ class SimulationState(object):
             self.headMove[ord(symbol)] = move
             self.write[ord(symbol)] = ord(realState.writeDict[symbol])
             self.nextState[ord(symbol)] = simulationStates[
-                    realState.nextStateDict[symbol]]
+                realState.nextStateDict[symbol]
+            ]
 
     def transitionFunc(self, ordsymbol):
-        return (self.nextState[ordsymbol],
-                self.write[ordsymbol],
-                self.headMove[ordsymbol])
+        return (
+            self.nextState[ordsymbol],
+            self.write[ordsymbol],
+            self.headMove[ordsymbol],
+        )
 
     def getNextState(self, ordsymbol):
         return self.nextState[ordsymbol]
@@ -221,6 +231,7 @@ class SimulationState(object):
     def isState(self):
         return True
 
+
 class Tape(object):
     # By convention the first symbol in the alphabet is the initial symbol
     def __init__(self, name, initSymbol):
@@ -229,12 +240,11 @@ class Tape(object):
         self.initSymbol = initSymbol
         self.initSymbolOrd = ord(initSymbol)
         # initialize tapes with a few initSymbols
-        self.tapePos = bytearray(self.initSymbol * 100)
-        self.tapeNeg = bytearray(self.initSymbol * 100)
+        self.tapePos = bytearray(self.initSymbol * 100, encoding="ascii")
+        self.tapeNeg = bytearray(self.initSymbol * 100, encoding="ascii")
 
     def length(self):
         return len(self.tapePos) + len(self.tapeNeg)
-
 
     def readSymbol(self):
         return self._readSymbol(self.headLoc)
@@ -296,7 +306,7 @@ class Tape(object):
     def printTape(self, start, end, output=None):
         out = self.getTapeOutput(start, end)
         if output == None:
-            print out,
+            print(out, end=" ")
         else:
             output.write(out)
 

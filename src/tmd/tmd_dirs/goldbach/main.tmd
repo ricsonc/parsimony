@@ -1,4 +1,4 @@
-input h foundSum isThisOnePrime evenNumber primeCounter !0 !1 !2 
+input evenNumber primeCounter isThisOnePrime foundSum h !0 !1 !2 
 
 // Auto-generated code for function main
 

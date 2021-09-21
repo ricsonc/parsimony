@@ -12,7 +12,6 @@ class LaconicListener(ParseTreeListener):
     def exitProg(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#trueprog.
     def enterTrueprog(self, ctx):
         pass
@@ -20,7 +19,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#trueprog.
     def exitTrueprog(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#command.
     def enterCommand(self, ctx):
@@ -30,7 +28,6 @@ class LaconicListener(ParseTreeListener):
     def exitCommand(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#nondefprog.
     def enterNondefprog(self, ctx):
         pass
@@ -38,7 +35,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#nondefprog.
     def exitNondefprog(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#nondefcommand.
     def enterNondefcommand(self, ctx):
@@ -48,7 +44,6 @@ class LaconicListener(ParseTreeListener):
     def exitNondefcommand(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#funcdef.
     def enterFuncdef(self, ctx):
         pass
@@ -56,7 +51,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#funcdef.
     def exitFuncdef(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#procdef.
     def enterProcdef(self, ctx):
@@ -66,7 +60,6 @@ class LaconicListener(ParseTreeListener):
     def exitProcdef(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#funcprocbody.
     def enterFuncprocbody(self, ctx):
         pass
@@ -74,7 +67,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#funcprocbody.
     def exitFuncprocbody(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#declare.
     def enterDeclare(self, ctx):
@@ -84,7 +76,6 @@ class LaconicListener(ParseTreeListener):
     def exitDeclare(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#intdecl.
     def enterIntdecl(self, ctx):
         pass
@@ -92,7 +83,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#intdecl.
     def exitIntdecl(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#listdecl.
     def enterListdecl(self, ctx):
@@ -102,7 +92,6 @@ class LaconicListener(ParseTreeListener):
     def exitListdecl(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#list2decl.
     def enterList2decl(self, ctx):
         pass
@@ -110,7 +99,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#list2decl.
     def exitList2decl(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#funcproccall.
     def enterFuncproccall(self, ctx):
@@ -120,7 +108,6 @@ class LaconicListener(ParseTreeListener):
     def exitFuncproccall(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#funcproccallbody.
     def enterFuncproccallbody(self, ctx):
         pass
@@ -128,7 +115,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#funcproccallbody.
     def exitFuncproccallbody(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#whileloop.
     def enterWhileloop(self, ctx):
@@ -138,7 +124,6 @@ class LaconicListener(ParseTreeListener):
     def exitWhileloop(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#forloop.
     def enterForloop(self, ctx):
         pass
@@ -146,7 +131,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#forloop.
     def exitForloop(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#ifstate.
     def enterIfstate(self, ctx):
@@ -156,7 +140,6 @@ class LaconicListener(ParseTreeListener):
     def exitIfstate(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#printstate.
     def enterPrintstate(self, ctx):
         pass
@@ -164,7 +147,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#printstate.
     def exitPrintstate(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#ifelsestate.
     def enterIfelsestate(self, ctx):
@@ -174,7 +156,6 @@ class LaconicListener(ParseTreeListener):
     def exitIfelsestate(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#ifelsenondefprog.
     def enterIfelsenondefprog(self, ctx):
         pass
@@ -182,7 +163,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#ifelsenondefprog.
     def exitIfelsenondefprog(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#elsenondefprog.
     def enterElsenondefprog(self, ctx):
@@ -192,7 +172,6 @@ class LaconicListener(ParseTreeListener):
     def exitElsenondefprog(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#ifnondefprog.
     def enterIfnondefprog(self, ctx):
         pass
@@ -200,7 +179,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#ifnondefprog.
     def exitIfnondefprog(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#whilenondefprog.
     def enterWhilenondefprog(self, ctx):
@@ -210,7 +188,6 @@ class LaconicListener(ParseTreeListener):
     def exitWhilenondefprog(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#ifelseexpr.
     def enterIfelseexpr(self, ctx):
         pass
@@ -218,7 +195,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#ifelseexpr.
     def exitIfelseexpr(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#ifexpr.
     def enterIfexpr(self, ctx):
@@ -228,7 +204,6 @@ class LaconicListener(ParseTreeListener):
     def exitIfexpr(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#whileexpr.
     def enterWhileexpr(self, ctx):
         pass
@@ -236,7 +211,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#whileexpr.
     def exitWhileexpr(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#expr.
     def enterExpr(self, ctx):
@@ -246,7 +220,6 @@ class LaconicListener(ParseTreeListener):
     def exitExpr(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#assign.
     def enterAssign(self, ctx):
         pass
@@ -254,7 +227,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#assign.
     def exitAssign(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#returnstate.
     def enterReturnstate(self, ctx):
@@ -264,7 +236,6 @@ class LaconicListener(ParseTreeListener):
     def exitReturnstate(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#intexpr.
     def enterIntexpr(self, ctx):
         pass
@@ -272,7 +243,6 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#intexpr.
     def exitIntexpr(self, ctx):
         pass
-
 
     # Enter a parse tree produced by LaconicParser#listexpr.
     def enterListexpr(self, ctx):
@@ -282,7 +252,6 @@ class LaconicListener(ParseTreeListener):
     def exitListexpr(self, ctx):
         pass
 
-
     # Enter a parse tree produced by LaconicParser#list2expr.
     def enterList2expr(self, ctx):
         pass
@@ -290,5 +259,3 @@ class LaconicListener(ParseTreeListener):
     # Exit a parse tree produced by LaconicParser#list2expr.
     def exitList2expr(self, ctx):
         pass
-
-

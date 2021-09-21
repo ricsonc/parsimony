@@ -1,4 +1,4 @@
-input oddNumber compositeFound h !0 !1 !2 
+input oddNumber h compositeFound !0 !1 !2 
 
 // Auto-generated code for function main
 

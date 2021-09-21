@@ -7,6 +7,7 @@ from LaconicListener import LaconicListener
 from codewriter import *
 import time
 
+
 def main(argv):
     input = FileStream(argv[1])
     lexer = LaconicLexer(input)
@@ -18,5 +19,6 @@ def main(argv):
     walker = ParseTreeWalker()
     walker.walk(writer, tree)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(sys.argv)
